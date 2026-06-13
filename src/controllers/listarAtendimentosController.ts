@@ -25,6 +25,6 @@ export function listar(req: Request, res: Response) {
             resultado.meta
             );
     } catch (error) {
-        return errorResponse(res, 500, 'Erro ao listar atendimentos');2
+        return errorResponse(res, 500, 'Erro ao listar atendimentos');
     }
 }
