@@ -40,6 +40,21 @@ export type Atendimento = {
     status: string;
 };
 
+export type ListarAtendimentosParams = {
+    page: number;
+    limit: number;
+};
+
+export type ListarAtendimentosResultado = {
+    data: Atendimento[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+};
+
 function normalizarAtendimento(atendimento: AtendimentoOriginal): Atendimento {
     return {
         codigoAgendamento: atendimento.Códigodoagendamento,
@@ -62,6 +77,26 @@ function normalizarAtendimento(atendimento: AtendimentoOriginal): Atendimento {
     }
 }
 
-export function listarAtendimentos(): Atendimento[] {
-    return atendimentoData.agendamentos.map(normalizarAtendimento);
+export function listarAtendimentos(
+    params: ListarAtendimentosParams
+): ListarAtendimentosResultado {
+    const atendimentos = atendimentoData.agendamentos.map(normalizarAtendimento);
+
+    const total = atendimentos.length;
+    const totalPages = Math.ceil(total / params.limit);
+
+    const startIndex = (params.page - 1) * params.limit;
+    const endIndex = startIndex + params.limit;
+
+    const data = atendimentos.slice(startIndex, endIndex);
+
+    return {
+        data,
+        meta: {
+            page: params.page,
+            limit: params.limit,
+            total,
+            totalPages,
+        },
+    };
 }
