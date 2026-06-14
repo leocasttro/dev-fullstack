@@ -12,6 +12,10 @@ export function buscarPorCodigo(req: Request, res: Response) {
 
         const resultado = buscarAtendimentoPorCodigo(codigo);
 
+        if (!resultado) {
+            return errorResponse(res, 404, 'Não foi encontrado agendamento');
+        }
+
         return successResponse(
             res,
             200,
