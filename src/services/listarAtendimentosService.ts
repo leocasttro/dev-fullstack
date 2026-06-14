@@ -1,12 +1,9 @@
-import atendimentoData from '../data/atendimentos.json';
-import { ListarAtendimentosParams, ListarAtendimentosResultado} from '../types/atendimentosTypes';
-import {obterAtendimentosNormalizados} from "./atendimentosDataService";
+import { Atendimento, ListarAtendimentosParams, ListarAtendimentosResultado } from '../types/atendimentosTypes';
 
 export function listarAtendimentos(
+    atendimentos: Atendimento[],
     params: ListarAtendimentosParams
 ): ListarAtendimentosResultado {
-    const atendimentos = obterAtendimentosNormalizados();
-
     const total = atendimentos.length;
     const totalPages = Math.ceil(total / params.limit);
 

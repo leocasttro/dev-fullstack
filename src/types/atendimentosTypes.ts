@@ -56,3 +56,13 @@ export type ListarAtendimentosResultado = {
         totalPages: number;
     };
 };
+
+export type FiltrarAtendimentosParams = {
+    search?: string;
+    status?: string;
+    tipo?: string;
+    agendamentoRealizado?: string;
+    organizacao?: string;
+    servico?: string;
+    local?: string;
+};
