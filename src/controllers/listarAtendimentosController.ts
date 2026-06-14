@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { listarAtendimentos } from "../services/listarAtendimentosService";
-import {successResponse, errorResponse, paginatedResponse} from "../utils/response";
+import { Request, Response } from 'express';
+import { listarAtendimentos } from '../services/listarAtendimentosService';
+import { errorResponse, paginatedResponse } from '../utils/response';
 
 export function listar(req: Request, res: Response) {
     try {
