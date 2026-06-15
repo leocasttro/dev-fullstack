@@ -1,122 +1,71 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import './App.css';
+import { ChartsSection } from './components/Dashboard/ChartsSection';
+import { MetricsGrid } from './components/Dashboard/MetricsGrid';
+import { ExportActions } from './components/Export/ExportActions';
+import { PageHeader } from './components/Layout/PageHeader';
+import { StatusMessage } from './components/Layout/StatusMessage';
+import { AppointmentsTable } from './components/Table/AppointmentsTable';
+import { Pagination } from './components/Table/Pagination';
+import { TableFilters } from './components/Table/TableFilters';
+import { Card } from './components/ui/Card';
+import { useAtendimentos } from './hooks/useAtendimentos';
+import { useMetricas } from './hooks/useMetricas';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const atendimentosState = useAtendimentos();
+    const { metricas, loading: loadingMetricas, error: metricasError } = useMetricas();
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    return (
+        <main className="app-shell">
+            <PageHeader
+                totalRegistros={metricas?.totalAgendamentos ?? atendimentosState.meta?.total ?? 0}
+                actions={<ExportActions filters={atendimentosState.filters} />}
+            />
 
-      <div className="ticks"></div>
+            {loadingMetricas && <StatusMessage type="loading" message="Carregando métricas..." />}
+            {metricasError && <StatusMessage type="error" message={metricasError} />}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            {metricas && (
+                <>
+                    <MetricsGrid metricas={metricas} />
+                    <ChartsSection metricas={metricas} />
+                </>
+            )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+            <Card className="table-card">
+                <div className="table-card__header">
+                    <div>
+                        <h2>Agendamentos</h2>
+                        <p>{atendimentosState.meta?.total ?? 0} resultados</p>
+                    </div>
+                    <span>Filtros ativos refletem nas exportações</span>
+                </div>
+
+                <TableFilters
+                    filters={atendimentosState.filters}
+                    onFilterChange={atendimentosState.updateFilter}
+                    onClear={atendimentosState.clearFilters}
+                />
+
+                <AppointmentsTable
+                    atendimentos={atendimentosState.atendimentos}
+                    loading={atendimentosState.loading}
+                    error={atendimentosState.error}
+                />
+
+                <Pagination
+                    meta={atendimentosState.meta}
+                    page={atendimentosState.page}
+                    loading={atendimentosState.loading}
+                    onPageChange={atendimentosState.setPage}
+                />
+            </Card>
+
+            <footer className="app-footer">
+                Dados mockados a partir de atendimentos.json - exportações respeitam busca e filtros ativos
+            </footer>
+        </main>
+    );
 }
 
-export default App
+export default App;
