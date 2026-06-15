@@ -66,3 +66,24 @@ export type FiltrarAtendimentosParams = {
     servico?: string;
     local?: string;
 };
+
+export type ContagemPorCampo = {
+    nome: string;
+    total: number;
+};
+
+export type MetricasAtendimentos = {
+    totalAgendamentos: number;
+    totalRealizados: number;
+    totalNaoRealizados: number;
+    totalConcluidos: number;
+    totalCancelados: number;
+    receitaTotal: number;
+    percentualRealizados: number;
+    porStatus: ContagemPorCampo[];
+    porTipo: ContagemPorCampo[];
+    porOrganizacao: ContagemPorCampo[];
+    porData: ContagemPorCampo[];
+    evolucaoMensal: ContagemPorCampo[];
+    porResponsavel: ContagemPorCampo[];
+};
